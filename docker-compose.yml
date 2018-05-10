@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db:
+    container_name: ae_mariadb
+    image: mariadb:latest
+    restart: always
+    ports:
+      - '13306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: p4ssw0rd
+    volumes:
+      - ./_cache/data:/var/lib/mysql:delegated
+      - ../.db:/docker-entrypoint-initdb.d:cached
+    command: mysqld --skip-name-resolve --character-set-server=utf8 --collation-server=utf8_unicode_ci
+  main:
+    container_name: ae_nginx
+    image: dmstr/php-yii2:7.2-fpm-4.0-alpha5-alpine-nginx
+    restart: always
+    volumes:
+      - ./_host-volumes/main/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:cached
+      - ./_cache/main/var/log/nginx:/var/log/nginx:cached
+      - ./_cache/composer:/root/.composer:cached
+      - ..:/app:delegated
+    ports:
+      - '8100:80'
+      - '8200:81'
+    links:
+      - db
