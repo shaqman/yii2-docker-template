@@ -11,8 +11,6 @@ mkdir -p $basedir/_cache/data
 mkdir -p $basedir/_cache/composer
 
 # Start the environment
-# docker-compose -f "$composefile" stop
-docker-compose -f "$composefile" up --no-recreate -d
-# docker exec ae_nginx composer update
-docker exec --interactive --tty ae_nginx bash
+docker-compose -f "$composefile" -p ab-tms-dev up -d --remove-orphans
+docker exec --interactive --tty ab_nginx_frontend bash
 
